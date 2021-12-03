@@ -1,6 +1,5 @@
 ---
 layout: post
-<<<<<<< HEAD
 title:  "Welcome to Jekyll!"
 date:   2021-12-01 21:34:14 +0900
 categories: jekyll update
@@ -8,17 +7,6 @@ categories: jekyll update
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
 Jekyll requires blog post files to be named according to the following format:
-=======
-title:  "Welcome to my tech blog"
-date:   2021-12-01 21:34:14 +0900
-categories: init
----
-안녕하세요. 저는 7년차 개발자 배윤선입니다. 
-챙피하지만 7년만에 처음 생성한 기술 블로그라 아직 정체성이 없습니다 :) 
-그리스 철학자 아리스토 텔레스가 그랬다죠? 'Well begun is half done' 시작이 반이다!!  지금부터 열심히 채워 보겠습니다.
-
-Let's Start!! 
->>>>>>> f572ea0dcb93339ba0dbbd62533f87138068d999
 
 `YEAR-MONTH-DAY-title.MARKUP`
 

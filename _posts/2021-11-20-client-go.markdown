@@ -1,0 +1,138 @@
+---
+layout: post
+title:  "Kubernetes API에 Go 클라이언트 방식으로 쉽게 접근하자!"
+date:   2021-11-20 21:34:14 +0900
+categories: Kubernetes, Go
+---
+
+쿠버네티스는 공식적으로 Go, Python, Java, .net, Javascript 클라이언트 라이브러리를 지원합니다. 지원하는 여러 클라이언트 라이브러리 중 우리는 Go 클라이언트를 사용하여 접근 해보겠습니다.
+
+# Go 클라이언트 
+먼저 client-go 라이브러리를 얻기 위해서 다음 명령을 실행합니다.  https://github.com/kubernetes/client-go  링크로 이동하여 어떤 버전이 있으며 버전 별 지원되는 항목을 확인 후 사용 용도에 맞게 설치 합니다.  
+```
+go get k8s.io/client-go@{kubernetes-version} //버전을 지정하여 설치
+go get k8s.io/client-go@latest // 최신 버전 설치
+```
+
+<br>
+
+Go 클라이언트는 Kubectl CLI가 kubernetes API 서버를 찾아 인증하기 위해 사용하는 것과 동일한 kubeconfig 파일을 사용 할 수 있습니다. 
+```java
+package main
+
+import (
+  "context"
+  "fmt"
+  "k8s.io/apimachinery/pkg/apis/meta/v1"
+  "k8s.io/client-go/kubernetes"
+  "k8s.io/client-go/tools/clientcmd"
+)
+
+func main() {
+  // $kubectl config current-context 와 같습니다.
+  config, _ := clientcmd.BuildConfigFromFlags("", "./kube/config")
+  // clientset을 생성한다
+  clientset, _ := kubernetes.NewForConfig(config)
+  // $kubectl get pods -n default 와 같습니다. pod name 뿐 아니라 상세 정보도 조회 할 수 있습니다. 
+  pods, _ := clientset.CoreV1().Pods("").List(context.TODO(), v1.ListOptions{})
+  fmt.Printf("pods List Count : ", len(pods.Items))
+}
+```
+
+<br>
+
+# Create Deployment
+Client Go를 이용하여 Pods, ServiceAccount, ConfigMap, Deployments등 을 생성 할 수 있습니다. 다음 예제는 그중에서 Deployment를 생성하는 예제입니다.  생성 후 위의 예제를 응용하여 조회 해 볼 수 있습니다.  
+```java
+config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+if err != nil {
+    panic(err)
+}
+clientset, err := kubernetes.NewForConfig(config)
+if err != nil {
+    panic(err)
+}
+
+deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
+
+deployment := &appsv1.Deployment{
+    ObjectMeta: metav1.ObjectMeta{
+        Name: "demo-deployment",
+    },
+    Spec: appsv1.DeploymentSpec{
+        Replicas: int32Ptr(2),
+        Selector: &metav1.LabelSelector{
+            MatchLabels: map[string]string{
+                "app": "demo",
+            },
+        },
+        Template: apiv1.PodTemplateSpec{
+            ObjectMeta: metav1.ObjectMeta{
+                Labels: map[string]string{
+                    "app": "demo",
+                },
+            },
+            Spec: apiv1.PodSpec{
+                Containers: []apiv1.Container{
+                    {
+                        Name:  "web",
+                        Image: "nginx:1.12",
+                        Ports: []apiv1.ContainerPort{
+                            {
+                                Name:          "http",
+                                Protocol:      apiv1.ProtocolTCP,
+                                ContainerPort: 80,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+}
+
+// Create Deployment
+fmt.Println("Creating deployment...")
+result, err := deploymentsClient.Create(context.TODO(), deployment, metav1.CreateOptions{})
+if err != nil {
+    panic(err)
+}
+fmt.Printf("Created deployment %q.\n", result.GetObjectMeta().GetName())
+```
+
+# Fake Client 
+다음은 Fake 클라이언트를 사용하여 client-go에 대한 테스트를 작성하는 방법입니다. 
+fake client를 사용하기 위하여 다음 명령어를 실행합니다.
+```
+go test -v k8s.io/client-go/examples/fake-client
+```
+
+TestCase작성 에서 fakeclient를 사용하여 중요 정보가 노출 되지 않고 테스트 할 수 있는 예제 입니다. 먼저 Fakeclient 생성 후 Create, get, update, list 등 응용하여 테스트 케이스를 작성 할 수 있습니다.  
+```java
+func TestFakeClientSet(t *testing.T) {
+    expectedValue := map[string]string{"a": "b", "c": "d"}
+
+    //fake 클라이언트 생성을 위한 fake configMap 정보를 만듭니다.
+    cm := &core_v1.ConfigMap{
+        ObjectMeta: v1.ObjectMeta{
+            Namespace: v1.NamespaceSystem,
+            Name:      "aws-auth",
+        },
+        Data: map[string]string{
+            "a": "b",
+            "c": "d",
+        },
+    }
+
+    //fake 클라이언트를 생성합니다. 
+    client := fake.NewSimpleClientset(cm)
+    logrus.Infof("client : %+v", client)
+    //fake client에서 aws-auth ConfigMap 조회 테스트를 합니다.  
+    getData, err := client.CoreV1().ConfigMaps("kube-system").Get(context.TODO(), "aws-auth", v1.GetOptions{})
+    if err != nil {
+        logrus.Errorf("[TestJsonToYamlPatch] get configmaps error : %+v", err)
+        return
+    }
+}
+```
+

@@ -1,0 +1,137 @@
+---
+layout: post
+title:  "Go Basic"
+date:   2021-11-16 21:34:14 +0900
+categories: Go
+---
+
+간단하게 Go의 특징을 알아보도록 하겠습니다.
+
+# 패키지 (Package)
+모든 Go 프로그램은 패키지로 구성이 되어있는데요.  패키지를 통하여  코드의 모듈화, 코드의 재사용 기능을 제공합니다. 
+Go는 개발에 필요한 많은 패키지들을 표준 라이브러리로 제공하고 있습니다. `https://pkg.go.dev/` 앞으로 많이 참조 할 링크가 되겠습니다. 
+
+<br>
+
+# Go fmt 패키지 Import  
+모든 프로그래밍 언어를 시작 할 때 가장 처음 `Hello World` 를 실행 하는데요. 여기서 제일 먼저 등장하는 패키지 입니다. 기본적인 출력과 입력 포맷을 제공 하는 `fmt` 라는 패키지 입니다.
+아래와 같이 패키지를 import 시켜 사용 할 수 있습니다.  
+```java 
+package main 
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello World")
+}
+```
+
+<br>
+
+# 변수 (Variable)
+Go의 변수는 키워드 var를 사용하여 선언합니다. var 키워드 뒤에 변수명, 그리고 여기서 다른 언어와 다르게 변수명 뒤에 변수 타입을 적습니다.
+```java
+var a int 
+var b string
+var c float
+
+a = 10
+b = "Hello Yunseon"
+c = "10.0"
+```
+만약 선언된 변수가 사용되지 않는다면, 에러를 발생 합니다. 따라서 사용되지 않는 변수는 삭제 해야 합니다.
+함수 내에서는  := 를 사용하면 var와 명시적인 타입을 생략 할 수 있습니다. *단, 함수 밖에서는 := 로 선언 할 수 없습니다.
+```java
+func main() {
+    var z, x, y int 1, 2, 3 // 복수 변수를 선언 할 때 
+    c, d, u := "create", "delete", "update" //  명시적인 타입 생략
+}
+```
+
+<br>
+
+# 상수 (Constants)
+Go의 상수는 키워드 `const`를 사용하여 변수와 같이 선언합니다. 
+```java
+const a int = 7
+fmt.Println("Luck", a)
+
+const n string = "yunseon"
+fmt.Println("My name is ", n)
+
+[result]
+Luck 7
+My name is yunseon
+```
+
+<br>
+
+# 함수 (Function)
+Go는 키워드`func`를 사용하여 정의한다. func 뒤에 함수명을 적고 괄호() 안에 파라미터를 적는다. 
+```java
+package main
+        
+import "fmt"
+        
+func main() {
+    a := "Hello Go"
+    answer(a) 
+}
+
+func answer(a string){
+    fmt.Pringln(a)
+}
+
+[result]
+Hello Go
+```
+Go는 함수의 리턴값이 없을 수도, 하나 일 수도, 복수 개일 수도 있습니다. Java, C언어에서 void 혹은 하나의 값만 리턴하는 것과 다른점 입니다.   이는 리턴되는 값들을 리턴 파라미터에 할당하여 리턴 할 수 있습니다. 
+```java
+package main
+        
+import "fmt"  
+
+func main() {
+    cnt, tol := sum(1, 2, 3, 4, 5)
+    fmt.Pringln(cnt, tol)        
+}
+
+func sum(nums ...int) (int, int) {
+    s := 0 // 합계 
+    c := 0 // 갯수 
+    for _, n := range nums {
+        s += n
+        c ++
+    }    
+    return c, s
+}
+
+[result]
+5, 15
+```
+<br>
+
+# 에러 (Error)
+Go는 내장 타입으로 error 라는 interface타입을 갖는다. `error` 인터페이스는 하나의 메서드를 갖습니다. 
+```java
+type error interface {
+    Error() string
+}
+```
+Go는 복수개의 리턴값을 가질 수 있기 때문에 결과와 함께 에러를 리턴한다면, 에러가 nil(go의 null) 인지를 체크 해서 에러가 있는지 없는지를 체크 합니다.
+```java
+package main 
+import (
+    "fmt"
+    "os"    
+)
+
+func main() {
+    f, err := os.Open("C:\\user\\test.txt")
+    if err !- nil {
+        fmt.Pringln(err.Error())
+    }
+    fmt.Println(f.Example())
+}
+```
+<span style="color:blue">* err.Error 메소드의 Output은 log일 뿐 error를 검사하여 프로그램의 행동을 바꾸는 일은 추천하지 않습니다.</span> 

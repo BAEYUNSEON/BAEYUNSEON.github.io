@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Go를 알고! 설치하고! 설정 하자!"
-date:   2021-12-03 21:34:14 +0900
+date:   2021-11-13 21:34:14 +0900
 categories: Go
 ---
 새로운 프로젝트를 시작할때 고려해야 할 많은 요소들이 있지만 개발 언어 선택은 그 중에서도 매우 중요한 결정입니다.
@@ -32,17 +32,18 @@ Windows 설치
 
 1. https://go.dev/dl/ 링크로 이동하여 `Featured downloads` 항목에 `Microsoft Windows` 설치 파일을 다운로드 합니다.
 
-> ![windows_download](../assets/go_windows_down.png)
+> ![windows_download](/assets/go_windows_down.png)
 
 2. 다운받은 설치 파일을 실행하여 설치 합니다.
 
-> ![windows_download](../assets/go_window_msi.png)
-3. 설치가 완료 되었으면 명령 프롬프트를 실행하여 버전 정보를 통해 제대로 설치 되었는지 확인합니다. 
+> ![windows_download](/assets/go_window_msi.png)
 
-``` 
- $ go version
- $ go evn 
-```
+3. 설치가 완료 되었으면 명령 프롬프트를 실행하여 버전 정보를 통해 제대로 설치 되었는지 확인합니다.
+
+>``` 
+ >$ go version
+ >$ go evn 
+>```
 
 
 
@@ -82,5 +83,7 @@ Linux
  $ go env
 ```
 
-이렇게 `Go` 설치를 해봤는데요. 이제 Go를 설치 하였으니 프로젝트에 Go를 사용하여 어떤 개발을 하였는지 알아볼께요. 
-다음 글로 Let's `Go` :)
+
+이렇게 `Go` 설치를 해봤는데요. 이제 Go를 설치 하였으니 프로젝트에 Go를 사용하여 어떤 개발을 하였는지 알아볼께요.
+<span style="color:blue">다음 글로 Let's `Go` :)</span>
+
